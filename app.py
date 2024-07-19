@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 import smtplib
 from email.message import EmailMessage
 
-files=list()
+files=list()    # all in email
 # mandatory fields validation
 exclude_fields = {}     
 mandatory_fields = []
@@ -67,24 +67,31 @@ def app():
 
     st.header(
         "Start Paperwork - S2 Participant Assessment, Planning and Support and Qualification Start")
-
-    # Define checklist items with their respective checkbox states
+    # Define checklist items with their corresponding placeholders
     checklist_items = [
-        ("Original ILR/ILP", "original_ilr_ilp"),
-        ("Original Eligibility Form", "original_eligibility_form"),
-        ("Initial Assessment Outcomes Form (With Literacy & Numeracy scores)", "assessment_outcomes"),
-        ("Contact Log for Start of Learning", "contact_log"),
-        ("Copy of PLR", "copy_of_plr"),
-        ("Contact Log for Start of Learning (Timesheet)", "contact_log_timesheet")
+        ("Original ILR/ILP", "p245", "p246"),
+        ("Original Eligibility Form", "p247", "p248"),
+        ("Initial Assessment Outcomes Form (With Literacy & Numeracy scores)", "p249", "p250"),
+        ("Contact Log for Start of Learning", "p251", "p252"),
+        ("Copy of PLR", "p253", "p254"),
+        ("Contact Log for Start of Learning (Timesheet)", "p255", "p256")
     ]
 
-    for doc, key_base in checklist_items:
-        st.subheader(doc)
+    # Dictionary to store checkbox states
+    checkbox_states = {}
+
+    for item, enclosed_placeholder, checked_placeholder in checklist_items:
+        st.subheader(item)
         col1, col2 = st.columns([1, 1])
+        
         with col1:
-            st.checkbox('Enclosed & Complete (✓)', key=f"{key_base}_enclosed")
+            enclosed = st.checkbox('Enclosed & Complete (✓)', key=enclosed_placeholder)
         with col2:
-            st.checkbox('Checked as correct by Prevista (✓)', key=f"{key_base}_checked")
+            checked = st.checkbox('Checked as correct by Prevista (✓)', key=checked_placeholder)
+        
+        # Store the states with tick mark for checked and '-' for not checked
+        checkbox_states[enclosed_placeholder] = '✓' if enclosed else '-'
+        checkbox_states[checked_placeholder] = '✓' if checked else '-'
 
 #     st.subheader('Provider Signature')
 
@@ -268,11 +275,11 @@ def app():
         household_selections[option] = st.checkbox(option, key=code)
 
     # Initialize relevant variables with empty string values
-    no_member_employed_with_children = ''
-    no_member_employed_without_children = ''
-    single_adult_household_with_children = ''
-    unemployed_single_adult_household = ''
-    none_of_the_above = ''
+    no_member_employed_with_children = '-'
+    no_member_employed_without_children = '-'
+    single_adult_household_with_children = '-'
+    unemployed_single_adult_household = '-'
+    none_of_the_above = '-'
 
     # Set variables based on selections
     if household_selections.get('1 - No household member in employment with one or more dependent children'):
@@ -312,7 +319,7 @@ def app():
     st.subheader('Do you consider yourself to have a long term disability, health problem or any learning difficulties? Choose the correct option. If Yes enter code in Primary LLDD or HP; you can add multiple LLDD or HP but primary must be recorded if Yes selected.')
     disability = st.radio('Choose the correct option:', ['Y', 'N'])
     # Initialize variables for disability options
-    has_disability, no_disability = '', ''
+    has_disability, no_disability = '-', '-'
     # Set variables based on user selection
     if disability == 'Y':
         has_disability, no_disability = 'Y', '-'
@@ -508,8 +515,8 @@ def app():
     additional_info = st.text_area('Is there any other additional information that may impact on your ability to learn?')
 
     # Other disadvantaged sections
-    st.subheader('Other disadvantaged - Ex Offender?')
-    ex_offender = st.radio('', ['Y', 'N', 'Choose not to say'], key='ex_offender')
+    st.subheader('Other disadvantaged')
+    ex_offender = st.radio('Ex Offender?', ['Y', 'N', 'Choose not to say'], key='ex_offender')
     # Initialize ex_offender variables
     ex_offender_y, ex_offender_n, ex_offender_choose_not_to_say = '', '', ''
     # Conditional input for ex_offender option
@@ -521,8 +528,7 @@ def app():
         ex_offender_choose_not_to_say = 'Choose not to say'
     
 
-    st.subheader('Other disadvantaged - Homeless?')
-    homeless = st.radio('', ['Y', 'N', 'Choose not to say'], key='homeless')
+    homeless = st.radio('Homeless?', ['Y', 'N', 'Choose not to say'], key='homeless')
     # Initialize homeless variables
     homeless_y, homeless_n, homeless_choose_not_to_say = '', '', ''
     # Conditional input for homeless option
@@ -1183,19 +1189,19 @@ def app():
 
 
     p58 = '-'
-    p59 = '-'
-    p60 = '-'
-    p60z = '-'
-    p60a = '-'
-    p61 = '-'
-    p61z = '-'
-    p61a = '-'
-    p62 = '-'
-    p63 = '-'
-    p63z = '-'
-    p63a = '-'
-    p63b = '-'
-    p64 = '-'
+    p59 = ''
+    p60 = ''
+    p60z = ''
+    p60a = ''
+    p61 = ''
+    p61z = ''
+    p61a = ''
+    p62 = ''
+    p63 = ''
+    p63z = ''
+    p63a = ''
+    p63b = ''
+    p64 = ''
 
 
     if participant_declaration == participant_options[0]:   #Below Level 1
@@ -1530,6 +1536,25 @@ def app():
     submit_button = st.button('Submit')
     if submit_button:
         placeholder_values = {
+            'p240': partnership,
+            'p241': learner_name,
+            'p242': qualification,
+            'p243': start_date.strftime('%Y-%m-%d'),  # Format date to string
+            'p244': end_date.strftime('%Y-%m-%d'),    # Format date to string
+            
+            'p245': checkbox_states['p245'],
+            'p246': checkbox_states['p246'],
+            'p247': checkbox_states['p247'],
+            'p248': checkbox_states['p248'],
+            'p249': checkbox_states['p249'],
+            'p250': checkbox_states['p250'],
+            'p251': checkbox_states['p251'],
+            'p252': checkbox_states['p252'],
+            'p253': checkbox_states['p253'],
+            'p254': checkbox_states['p254'],
+            'p255': checkbox_states['p255'],
+            'p256': checkbox_states['p256'],
+    
             'p110': title_mr,
             'p111': title_mrs,
             'p112': title_miss,
@@ -1543,9 +1568,7 @@ def app():
             'p115': gender_f,
             'p116': other_gender,
             'p117': other_gender_text,
-
-            'p4': date_of_birth,
-
+            'p4': date_of_birth.strftime('%Y-%m-%d'),
             'p118': current_age,
             'p119': ethnicity_vars['ethnicity_31'],
             'p120': ethnicity_vars['ethnicity_32'],
@@ -1839,7 +1862,7 @@ def app():
         else:        
             # Define input and output paths
             template_file = "ph esfa.docx"
-            modified_file = "Filled_EFSA_form.docx"
+            modified_file = f"Filled_ESFA_AEB_start_forms_{family_name}.docx"
 
             if len(participant_signature.json_data['objects']) != 0:
                 # Convert the drawing to a PIL image and save it
@@ -1861,15 +1884,15 @@ def app():
                 sender_password = os.getenv('PASSWORD')
 
                 receiver_email = sender_email
-                subject = f"ESFA Form Submission {family_name}"
+                subject = f"ESFA Form Submission: {family_name} {start_date}"
                 body = "ESFA Form submitted. Please find attached files."
 
                 # Local file path
-                local_file_path = f"Filled_ESFA_AEB_start_forms_{family_name}.docx"
+                local_file_path = modified_file
 
                 # Send email with attachments
                 if files or local_file_path:
-                    # send_email_with_attachments(sender_email, sender_password, receiver_email, subject, body, files, local_file_path)
+                    send_email_with_attachments(sender_email, sender_password, receiver_email, subject, body, files, local_file_path)
                     st.success("Response sent successfully!")
                 else:
                     st.warning("Please upload at least one file or specify a local file.")
@@ -2046,6 +2069,7 @@ def send_email_with_attachments(sender_email, sender_password, receiver_email, s
         msg.add_attachment(uploaded_file.read(), maintype='application', subtype='octet-stream', filename=uploaded_file.name)
 
     # Attach local file if specified
+    print(local_file_path)
     if local_file_path:
         with open(local_file_path, 'rb') as f:
             file_data = f.read()
