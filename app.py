@@ -10,6 +10,7 @@ import os
 from dotenv import load_dotenv
 import smtplib
 from email.message import EmailMessage
+import time
 
 files=list()    # all in email
 # mandatory fields validation
@@ -1842,8 +1843,9 @@ def app():
             'p303': len(selected_levels),
             'p304': referrall,
             
-
         }
+
+        progress_bar(20)
         
         # mandatory fields validation
         
@@ -1892,7 +1894,7 @@ def app():
 
                 # Send email with attachments
                 if files or local_file_path:
-                    send_email_with_attachments(sender_email, sender_password, receiver_email, subject, body, files, local_file_path)
+                    # send_email_with_attachments(sender_email, sender_password, receiver_email, subject, body, files, local_file_path)
                     st.success("Response sent successfully!")
                 else:
                     st.warning("Please upload at least one file or specify a local file.")
@@ -2113,6 +2115,25 @@ def calculate_age(born):
 
     st.markdown(scroll_script, unsafe_allow_html=True)
 
+def progress_bar(duration_seconds):
+    """Displays a progress bar that fills over the specified duration."""
+    progress_bar = st.progress(0)
+    
+    # Number of updates per second for smoother progress
+    updates_per_second = 20
+    # Time to wait between updates
+    sleep_time = 1 / updates_per_second
+    # Total number of updates
+    total_updates = duration_seconds * updates_per_second
+    
+    for i in range(total_updates + 1):
+        # Update the progress bar
+        progress = i / total_updates
+        progress_bar.progress(progress)
+        # Sleep for the calculated time
+        time.sleep(sleep_time)
+    
+    st.write("Progress complete!")
 
 if __name__ == '__main__':
     app()
