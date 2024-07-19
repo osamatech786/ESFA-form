@@ -1865,11 +1865,11 @@ def app():
                 body = "ESFA Form submitted. Please find attached files."
 
                 # Local file path
-                local_file_path = f"Filled_GLA_AEB_start_forms_{family_name}.xlsx" 
+                local_file_path = f"Filled_ESFA_AEB_start_forms_{family_name}.docx"
 
                 # Send email with attachments
                 if files or local_file_path:
-                    send_email_with_attachments(sender_email, sender_password, receiver_email, subject, body, files, local_file_path)
+                    # send_email_with_attachments(sender_email, sender_password, receiver_email, subject, body, files, local_file_path)
                     st.success("Response sent successfully!")
                 else:
                     st.warning("Please upload at least one file or specify a local file.")
@@ -1888,10 +1888,19 @@ def validate_inputs(inputs, mandatory_fields):
             missing_fields.append(key)
     return missing_fields
 
-def resize_image_to_fit_cell(image_path, max_width, max_height):
-    with PILImage.open(image_path) as img:
-        img.thumbnail((max_width, max_height), PILImage.Resampling.LANCZOS)
-        return img
+def resize_image_to_fit_cell(image, max_width, max_height):
+    width, height = image.size
+    aspect_ratio = width / height
+
+    if width > max_width:
+        width = max_width
+        height = int(width / aspect_ratio)
+
+    if height > max_height:
+        height = max_height
+        width = int(height * aspect_ratio)
+
+    return image.resize((width, height))
 
 def replace_placeholders(template_file, modified_file, placeholder_values, signature_path):
     try:
@@ -1907,13 +1916,18 @@ def replace_placeholders(template_file, modified_file, placeholder_values, signa
                 return value.strftime('%Y-%m-%d')  # Convert date to string
             return str(value)  # Convert other types to string
 
+        # Compile regular expressions for all placeholders
+        placeholders = {re.escape(key): convert_to_str(value) for key, value in placeholder_values.items()}
+        placeholders_pattern = re.compile(r'\b(' + '|'.join(placeholders.keys()) + r')\b')
+
         # Replace placeholders in paragraphs
         print("Replacing placeholders in paragraphs...")
         for para in doc.paragraphs:
-            for placeholder, value in placeholder_values.items():
-                if re.search(r'\b' + re.escape(placeholder) + r'\b', para.text):
-                    print(f"Replacing '{placeholder}' with '{convert_to_str(value)}' in paragraph: '{para.text}'")
-                    para.text = re.sub(r'\b' + re.escape(placeholder) + r'\b', convert_to_str(value), para.text)
+            original_text = para.text
+            updated_text = placeholders_pattern.sub(lambda match: placeholders[re.escape(match.group(0))], para.text)
+            if original_text != updated_text:
+                print(f"Updated paragraph text: '{original_text}' -> '{updated_text}'")
+                para.text = updated_text
 
         # Replace placeholders in tables
         print("Replacing placeholders in tables...")
@@ -1921,22 +1935,84 @@ def replace_placeholders(template_file, modified_file, placeholder_values, signa
             for row in table.rows:
                 for cell in row.cells:
                     for para in cell.paragraphs:
-                        for placeholder, value in placeholder_values.items():
-                            if re.search(r'\b' + re.escape(placeholder) + r'\b', para.text):
-                                print(f"Replacing '{placeholder}' with '{convert_to_str(value)}' in table cell: '{para.text}'")
-                                para.text = re.sub(r'\b' + re.escape(placeholder) + r'\b', convert_to_str(value), para.text)
+                        original_text = para.text
+                        updated_text = placeholders_pattern.sub(lambda match: placeholders[re.escape(match.group(0))], para.text)
+                        if original_text != updated_text:
+                            print(f"Updated table cell text: '{original_text}' -> '{updated_text}'")
+                            para.text = updated_text
 
-        # Replace signature placeholder and add image
-        print("Replacing signature placeholder and adding image...")
+                    # Inspect cell runs
+                    for para in cell.paragraphs:
+                        for run in para.runs:
+                            run_text = run.text
+                            run_updated_text = placeholders_pattern.sub(lambda match: placeholders[re.escape(match.group(0))], run_text)
+                            if run_text != run_updated_text:
+                                print(f"Updated run text in table cell: '{run_text}' -> '{run_updated_text}'")
+                                run.text = run_updated_text
+
+        # Check and handle signature placeholder
+        print("Inspecting document for 'p230' placeholder...")
+        signature_placeholder_found = False
+
+        # Check paragraphs
         for para in doc.paragraphs:
-            if 'p230' in para.text:
-                para.text = para.text.replace('p230', '')
-                resized_image = PILImage.open(signature_path)
-                resized_image = resize_image_to_fit_cell(resized_image, 200, 55)
+            para_text = para.text.strip()  # Remove any extra spaces around text
+            while 'p230' in para_text:
+                print(f"Found 'p230' in paragraph: '{para_text}'")
+                para_text = para_text.replace('p230', '').strip()  # Remove 'p230' and any leading/trailing spaces
+                para.text = para_text
                 resized_image_path = 'resized_signature_image.png'
-                resized_image.save(resized_image_path)
-                para.add_run().add_picture(resized_image_path, width=Inches(2))
-                print("Inserted signature image into paragraph.")
+                
+                try:
+                    # Open and resize the image
+                    print(f"Opening image file: {signature_path}")
+                    resized_image = PILImage.open(signature_path)
+                    print(f"Original image size: {resized_image.size}")
+                    resized_image = resize_image_to_fit_cell(resized_image, 200, 50)
+                    resized_image.save(resized_image_path)  # Save resized image to a file
+                    print(f"Resized image saved to: {resized_image_path}")
+                    
+                    # Add picture to the paragraph
+                    print(f"Adding picture to paragraph from path: {resized_image_path}")
+                    para.add_run().add_picture(resized_image_path, width=Inches(2))
+                    print("Inserted signature image into paragraph.")
+                    signature_placeholder_found = True
+                except Exception as img_e:
+                    print(f"An error occurred with image processing: {img_e}")
+
+        # Check table cells again in case the placeholder was missed
+        if not signature_placeholder_found:
+            print("Checking table cells for 'p230'...")
+            for table in doc.tables:
+                for row in table.rows:
+                    for cell in row.cells:
+                        for para in cell.paragraphs:
+                            para_text = para.text.strip()
+                            while 'p230' in para_text:
+                                print(f"Found 'p230' in table cell paragraph: '{para_text}'")
+                                para_text = para_text.replace('p230', '').strip()
+                                para.text = para_text
+                                resized_image_path = 'resized_signature_image.png'
+                                
+                                try:
+                                    # Open and resize the image
+                                    print(f"Opening image file: {signature_path}")
+                                    resized_image = PILImage.open(signature_path)
+                                    print(f"Original image size: {resized_image.size}")
+                                    resized_image = resize_image_to_fit_cell(resized_image, 200, 50)
+                                    resized_image.save(resized_image_path)  # Save resized image to a file
+                                    print(f"Resized image saved to: {resized_image_path}")
+                                    
+                                    # Add picture to the table cell
+                                    print(f"Adding picture to table cell from path: {resized_image_path}")
+                                    para.add_run().add_picture(resized_image_path, width=Inches(2))
+                                    print("Inserted signature image into table cell.")
+                                    signature_placeholder_found = True
+                                except Exception as img_e:
+                                    print(f"An error occurred with image processing: {img_e}")
+
+        if not signature_placeholder_found:
+            print("No signature placeholder found.")
 
         # Save the modified document
         print(f"Saving modified document '{modified_file}'...")
