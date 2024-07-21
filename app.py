@@ -1845,7 +1845,7 @@ def app():
             
         }
 
-        progress_bar(20)
+        # progress_bar(20)
         
         # mandatory fields validation
         
@@ -1894,7 +1894,7 @@ def app():
 
                 # Send email with attachments
                 if files or local_file_path:
-                    # send_email_with_attachments(sender_email, sender_password, receiver_email, subject, body, files, local_file_path)
+                    send_email_with_attachments(sender_email, sender_password, receiver_email, subject, body, files, local_file_path)
                     st.success("Response sent successfully!")
                 else:
                     st.warning("Please upload at least one file or specify a local file.")
