@@ -133,8 +133,8 @@ def app():
 
 
     first_name = st.text_input('First Name', key="first_name")
-    middle_name = st.text_input('Middle Name')
-    family_name = st.text_input('Family Name')
+    middle_name = st.text_input('Middle Name', key="middle_name")
+    family_name = st.text_input('Family Name', key="family_name")
     # mandatory_fields.extend([f'p{i}' for i in range(1, 4)]) 
 
     # Initialize gender variables
@@ -318,7 +318,7 @@ def app():
 
     # Long term disability, health problem, or learning difficulties
     st.subheader('Do you consider yourself to have a long term disability, health problem or any learning difficulties? Choose the correct option. If Yes enter code in Primary LLDD or HP; you can add multiple LLDD or HP but primary must be recorded if Yes selected.')
-    disability = st.radio('Choose the correct option:', ['Y', 'N'])
+    disability = st.radio('Choose the correct option:', ['Y', 'N'], index=0)
     # Initialize variables for disability options
     has_disability, no_disability = '-', '-'
     # Set variables based on user selection
