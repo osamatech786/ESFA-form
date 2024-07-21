@@ -1,16 +1,16 @@
 import streamlit as st
 from streamlit_drawable_canvas import st_canvas
+import shutil
 import re
 from PIL import Image as PILImage
-import shutil
-from docx import Document
-from docx.shared import Inches
 from datetime import datetime, date, timedelta
-import os
-# from dotenv import load_dotenv
+import time
 import smtplib
 from email.message import EmailMessage
-import time
+import os
+from docx import Document
+from docx.shared import Inches
+# from dotenv import load_dotenv
 
 files=list()    # all in email
 # mandatory fields validation
@@ -1874,7 +1874,6 @@ def app():
                 signature_image.save(signature_path)
 
                 replace_placeholders(template_file, modified_file, placeholder_values, signature_path)
-                # st.success(f"Template modified and saved as {modified_file}")
 
                 # Email
 
