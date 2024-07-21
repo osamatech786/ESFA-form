@@ -1845,7 +1845,7 @@ def app():
             
         }
 
-        progress_bar(5)
+        # progress_bar(5)
         
         # mandatory fields validation
         
