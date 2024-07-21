@@ -43,56 +43,40 @@ def app():
     global mandatory_fields
 
     st.title('Welcome')
-    st.subheader('Please fill out the following details:')
+    st.subheader('Please fill out the following personal details:')
 
     # Form inputs
-    partnership = st.text_input('Partnership')
-    learner_name = st.text_input('Learner Name')
-    qualification = st.selectbox('Qualification', [
-        'High School Diploma', 'Bachelor\'s Degree', 'Master\'s Degree', 'PhD', 'Other'
-    ])
-    start_date = st.date_input(
-        label="Aim Start Date",
-        value=date.today(),  # Default date
-        min_value=date(1900, 1, 1),  # Minimum selectable date
-        max_value=date(2025, 12, 31),  # Maximum selectable date
-        help="Choose a date"  # Tooltip text
-    )
-    end_date = st.date_input(
-        label="Expected Aim End Date",
-        value=date.today(),  # Default date
-        min_value=date(1900, 1, 1),  # Minimum selectable date
-        max_value=date(2025, 12, 31),  # Maximum selectable date
-        help="Choose a date"  # Tooltip text
-    )
+    # partnership = st.text_input('Partnership')
 
-    st.header(
-        "Start Paperwork - S2 Participant Assessment, Planning and Support and Qualification Start")
-    # Define checklist items with their corresponding placeholders
-    checklist_items = [
-        ("Original ILR/ILP", "p245", "p246"),
-        ("Original Eligibility Form", "p247", "p248"),
-        ("Initial Assessment Outcomes Form (With Literacy & Numeracy scores)", "p249", "p250"),
-        ("Contact Log for Start of Learning", "p251", "p252"),
-        ("Copy of PLR", "p253", "p254"),
-        ("Contact Log for Start of Learning (Timesheet)", "p255", "p256")
-    ]
 
-    # Dictionary to store checkbox states
-    checkbox_states = {}
+    # st.header(
+    #     "Start Paperwork - S2 Participant Assessment, Planning and Support and Qualification Start")
+    # # Define checklist items with their corresponding placeholders
+    # checklist_items = [
+    #     ("Original ILR/ILP", "p245", "p246"),
+    #     ("Original Eligibility Form", "p247", "p248"),
+    #     ("Initial Assessment Outcomes Form (With Literacy & Numeracy scores)", "p249", "p250"),
+    #     ("Contact Log for Start of Learning", "p251", "p252"),
+    #     ("Copy of PLR", "p253", "p254"),
+    #     ("Contact Log for Start of Learning (Timesheet)", "p255", "p256")
+    # ]
 
-    for item, enclosed_placeholder, checked_placeholder in checklist_items:
-        st.subheader(item)
-        col1, col2 = st.columns([1, 1])
+    # # Dictionary to store checkbox states
+    # checkbox_states = {}
+
+    # for item, enclosed_placeholder, checked_placeholder in checklist_items:
+    #     st.subheader(item)
+    #     col1, col2 = st.columns([1, 1])
         
-        with col1:
-            enclosed = st.checkbox('Enclosed & Complete (✓)', key=enclosed_placeholder)
-        with col2:
-            checked = st.checkbox('Checked as correct by Prevista (✓)', key=checked_placeholder)
+    #     with col1:
+    #         enclosed = st.checkbox('Enclosed & Complete (✓)', key=enclosed_placeholder)
+    #     with col2:
+    #         checked = st.checkbox('Checked as correct by Prevista (✓)', key=checked_placeholder)
         
-        # Store the states with tick mark for checked and '-' for not checked
-        checkbox_states[enclosed_placeholder] = '✓' if enclosed else '-'
-        checkbox_states[checked_placeholder] = '✓' if checked else '-'
+    #     # Store the states with tick mark for checked and '-' for not checked
+    #     checkbox_states[enclosed_placeholder] = '✓' if enclosed else '-'
+    #     checkbox_states[checked_placeholder] = '✓' if checked else '-'
+
 
 #     st.subheader('Provider Signature')
 
@@ -116,7 +100,7 @@ def app():
 #     help="Choose a date"  # Tooltip text
 # )
 
-    st.header("Personal Details")
+    # st.header("Personal Details")
     title_mr, title_mrs, title_miss, title_ms='','','',''
     title = st.radio(
         "Title",
@@ -135,7 +119,27 @@ def app():
     first_name = st.text_input('First Name', key="first_name")
     middle_name = st.text_input('Middle Name', key="middle_name")
     family_name = st.text_input('Family Name', key="family_name")
-    # mandatory_fields.extend([f'p{i}' for i in range(1, 4)]) 
+    learner_name = f"{first_name} {middle_name} {family_name}".strip()
+    # # mandatory_fields.extend([f'p{i}' for i in range(1, 4)]) 
+    # mandatory_fields.extend(['p1','p3']) 
+
+    start_date = st.date_input(
+        label="Aim Start Date",
+        value=date.today(),  # Default date
+        min_value=date(1900, 1, 1),  # Minimum selectable date
+        max_value=date(2025, 12, 31),  # Maximum selectable date
+        help="Choose a date"  # Tooltip text
+    )
+    end_date = st.date_input(
+        label="Expected Aim End Date",
+        value=date.today(),  # Default date
+        min_value=date(1900, 1, 1),  # Minimum selectable date
+        max_value=date(2025, 12, 31),  # Maximum selectable date
+        help="Choose a date"  # Tooltip text
+    )
+    qualification = st.selectbox('Qualification', [
+        'High School Diploma', 'Bachelor\'s Degree', 'Master\'s Degree', 'PhD', 'Other'
+    ])
 
     # Initialize gender variables
     gender_m, gender_f, other_gender, other_gender_text = '', '', '', ''
@@ -294,14 +298,14 @@ def app():
     if household_selections.get('99 - None of the above apply'):
         none_of_the_above = 'X'
         
-    # Display selected household situations
-    st.subheader('Selected Household Situations:')
-    selected_households = [option for option, selected in household_selections.items() if selected]
-    if selected_households:
-        for selected in selected_households:
-            st.write(selected)
-    else:
-        st.write('No options selected.')
+    # # Display selected household situations
+    # st.subheader('Selected Household Situations:')
+    # selected_households = [option for option, selected in household_selections.items() if selected]
+    # if selected_households:
+    #     for selected in selected_households:
+    #         st.write(selected)
+    # else:
+    #     st.write('No options selected.')
 
     # Check if at least one checkbox is selected
     if any(household_selections.values()):
@@ -548,26 +552,29 @@ def app():
 
     # Initialize referral source variables
     internally_sourced, recommendation, event, self_referral, family_friends = '', '', '', '', ''
-    other, website, promotional_material = '', '', ''
+    other, website, promotional_material, jobcentre_plus = '', '', '', ''
     event_specify, other_specify = '', ''
 
     # Adding checkboxes for each referral source option
     with col1:
         internally_sourced = st.checkbox('Internally sourced', key='internally_sourced')
         recommendation = st.checkbox('Recommendation')
-        event = st.checkbox('Event (please specify)')
+        promotional_material = st.checkbox('Promotional material')
     with col2:
         self_referral = st.checkbox('Self Referral')
         family_friends = st.checkbox('Family/ Friends')
-        other = st.checkbox('Other (please specify)')
+        event = st.checkbox('Event (please specify)')
     with col3:
         website = st.checkbox('Website', key='website')
-        promotional_material = st.checkbox('Promotional material')
+        jobcentre_plus = st.checkbox('JobCentre Plus')
+        other = st.checkbox('Other (please specify)')
     # Text inputs for 'Event (please specify)' and 'Other (please specify)' if checked
     if event:
         event_specify = st.text_input('Please specify the event', key='event_specify')
     if other:
         other_specify = st.text_input('Please specify other source', key='other_specify')
+
+    specify_refereel = st.text_input("Please let us know the organization or advisor who referred you to our program, or indicate where you found out about this opportunity. If it was through a job center, please specify its location.", key="specify_refereel")
 
     # Setting 'X' for chosen options
     internally_sourced_val = 'X' if internally_sourced else ''
@@ -578,18 +585,22 @@ def app():
     other_val = other_specify if other else ''
     website_val = 'X' if website else ''
     promotional_material_val = 'X' if promotional_material else ''
+    jobcentre_plus_val = 'X' if jobcentre_plus else ''
 
 
     # mandatory validation
     referrall=''
-    if (internally_sourced_val=='X' or 
-        recommendation_val=='X' or 
-        event_val=='X' or self_referral_val=='X' or 
-        family_friends_val=='X' or other_val=='X' or 
-        website_val=='X' or 
-        promotional_material_val=='X'
-        ):
-        referrall='filled'
+    if (internally_sourced_val == 'X' or 
+        recommendation_val == 'X' or 
+        event_val == 'X' or 
+        self_referral_val == 'X' or 
+        family_friends_val == 'X' or 
+        other_val == 'X' or 
+        website_val == 'X' or 
+        promotional_material_val == 'X' or
+        jobcentre_plus_val == 'X' and
+        len(specify_refereel)>0):
+        referrall = 'filled'
     # mandatory_fields.extend(['p304'])
    
     # Employment and Monitoring Information Section
@@ -599,7 +610,7 @@ def app():
     unemployed_val, economically_inactive_val, employed_val = '', '', ''
 
     # Participant Employment Status
-    st.subheader('Participant Employment Status (place an X in the applicable box)')
+    st.subheader('Participant Employment Status')
     employment_status = st.radio(
         "Select your employment status:",
         [
@@ -892,22 +903,22 @@ def app():
 
             if settled_status == conditions[0]:
                 hold_settled_status, hold_pre_settled_status, hold_leave_to_remain = 'X', '', ''
-                st.text('Please upload proof of your settled status')
-                uploaded_file = st.file_uploader("Upload Proof of Settled Status", type=['docx', 'pdf', 'jpg', 'jpeg', 'png'])
+                st.text('Please upload your share code which is accessible from the following link:')
+                uploaded_file = st.file_uploader("https://www.gov.uk/check-immigration-status", type=['docx', 'pdf', 'jpg', 'jpeg', 'png'])
                 if uploaded_file is not None:
                     files.append(uploaded_file)
 
             elif settled_status == conditions[1]:
                 hold_settled_status, hold_pre_settled_status, hold_leave_to_remain = '', 'X', ''
-                st.text('Please upload proof of your pre-settled status')
-                uploaded_file = st.file_uploader("Upload Proof of Pre-Settled Status", type=['docx', 'pdf', 'jpg', 'jpeg', 'png'])
+                st.text('Please upload your share code which is accessible from the following link:')
+                uploaded_file = st.file_uploader("https://www.gov.uk/check-immigration-status", type=['docx', 'pdf', 'jpg', 'jpeg', 'png'])
                 if uploaded_file is not None:
                     files.append(uploaded_file)
 
             elif settled_status == conditions[2]:
                 hold_settled_status, hold_pre_settled_status, hold_leave_to_remain = '', '', 'X'
-                st.text('Please upload proof of your leave to remain status')
-                uploaded_file = st.file_uploader("Upload Proof of Leave to Remain Status", type=['docx', 'pdf', 'jpg', 'jpeg', 'png'])
+                st.text('Please upload your share code which is accessible from the following link:')
+                uploaded_file = st.file_uploader("https://www.gov.uk/check-immigration-status", type=['docx', 'pdf', 'jpg', 'jpeg', 'png'])
                 if uploaded_file is not None:
                     files.append(uploaded_file)
 
@@ -1155,7 +1166,7 @@ def app():
         st.stop()
     st.success("The date of issue is within the last 3 months.")
 
-    st.header('Initial Assessment')
+    st.header('Details of Qualification or Training')
   
     qualification_or_training = st.radio(
     'Are you currently undertaking a qualification or training?',
@@ -1163,7 +1174,6 @@ def app():
 
     if qualification_or_training=='Yes':
         qualification_or_training_y, qualification_or_training_n = 'Y', '-'
-        st.subheader('Details of Qualification or Training')
 
         course_details = st.text_area('Course Details',
                                       'Enter details of the course')
@@ -1423,26 +1433,34 @@ def app():
     st.header('Other Information')
 
 
-    st.subheader('Current Job Role and Day to Day Activities')
-    job_role_activities = st.text_area(
-        'What is your current job role and what are your day to day activities?'
-    )
+    job_role_activities='No job.'
+    current_job = st.radio(
+    'Are you currently doing job?',
+    ['No', 'Yes'])
+    if current_job=='Yes':
+        st.subheader('Current Job Role and Day to Day Activities')
+        job_role_activities = st.text_area(
+            'What is your current job role and what are your day to day activities?'
+        )
+
 
 
     st.subheader('Career Aspirations')
-    career_aspirations = st.text_area('What are your career aspirations?')
+    career_aspirations = st.text_area('What are your career aspirations? (Please provide details.)')
 
 
-    st.subheader('Training/Qualifications Needed')
-    training_qualifications_needed = st.text_area(
-        'What training/qualifications do you need to progress further in your career? (Planned and future training)'
-    )
+    training_qualifications_needed='    '
+    # st.subheader('Training/Qualifications Needed')
+    # training_qualifications_needed = st.text_area(
+    #     'What training/qualifications do you need to progress further in your career? (Planned and future training)'
+    # )
 
 
-    st.subheader('Barriers to Achieving Career Aspirations')
-    barriers_to_achieving_aspirations = st.text_area(
-        'What are the barriers to achieving your career aspirations and goals?'
-    )
+    barriers_to_achieving_aspirations='    '
+    # st.subheader('Barriers to Achieving Career Aspirations')
+    # barriers_to_achieving_aspirations = st.text_area(
+    #     'What are the barriers to achieving your career aspirations and goals?'
+    # )
 
     # mandatory_fields.extend([f'p{i}' for i in range(99, 103)])
 
@@ -1473,16 +1491,56 @@ def app():
     #     'Terms and Conditions of Learning and programme content & programme delivery'
     # )
 
+
+
+    # Privacy Notice Text
+    privacy_notice = """
+    Privacy Notice
+
+    This privacy notice is issued by the Education and Skills Funding Agency (ESFA) on behalf of the Secretary of State for the Department of Education (DfE) to inform learners about the Individualised Learner Record (ILR) and how their personal information is used in the ILR. Your personal information is used by the DfE to exercise our functions under article 6(1)(e) of the UK GDPR and to meet our statutory responsibilities, including under the Apprenticeships, Skills, Children and Learning Act 2009.
+
+    The ILR collects data about learners and learning undertaken. Publicly funded colleges, training organisations, local authorities, and employers (FE providers) must collect and return the data to the ESFA each year under the terms of a funding agreement, contract or grant agreement. It helps ensure that public money distributed through the ESFA is being spent in line with government targets. It is also used for education, training, employment, and wellbeing purposes, including research. We retain ILR learner data for 3 years for operational purposes and 66 years for research purposes. For more information about the ILR and the data collected, please see the ILR specification at https://www.gov.uk/government/collections/individualised-learner-record-ilr
+
+    ILR data is shared with third parties where it complies with DfE data sharing procedures and where the law allows it. The DfE and the English European Social Fund (ESF) Managing Authority (or agents acting on their behalf) may contact learners to carry out research and evaluation to inform the effectiveness of training. In these cases, it is part of our statutory duties and we do not need your consent.
+
+    For more information about how your personal data is used and your individual rights, please see the DfE Roles and Responsibilities Personal Information Charter(https://www.gov.uk/government/organisations/department-for-education/about/personal-information-charter) and the ESFA Privacy Notice (https://www.gov.uk/government/publications/esfa-privacy-notice).
+
+    If you would like to get in touch with us, you can contact the DfE in the following ways:
+    - Using our online contact form at https://www.gov.uk/government/organisations/department-for-education/about/personal-information-charter.
+    - By telephoning the DfE Helpline on 0370 000 2288 or in writing to - Data Protection Officer, Ministerial and Public Communications Division, Department for Education, Piccadilly Gate, Store Street, Manchester, M1 2WD.
+
+    By completing the 'Learner Declaration'. This means that:
+
+    - You understand this provision is delivered by Prevista Ltd or by the named subcontractor on page 1 on behalf Prevista Ltd (or sub-contractor where indicated).
+    - You will be the provider know of any changes in your personal circumstances.
+    - You fully agree that the provider can process information about you.
+    - You understand that the form will be kept until 31st December 2030 at the latest.
+
+    Prevista Ltd will:
+
+    - Provide appropriate guidance and support to the Subcontractor to ensure that they deliver high-quality services.
+    - Monitor and evaluate the performance of the Subcontractor regularly to ensure that they meet the agreed-upon standards.
+    - Provide the necessary resources and information to the Subcontractor to enable them to carry out their work effectively.
+    - Ensure that the Subcontractor complies with all relevant laws and regulations.
+
+    The Subcontractor will:
+
+    - Deliver the agreed-upon services to a high standard and in a timely manner.
+    - Comply with all relevant laws and regulations, including health and safety requirements.
+    - Provide regular progress reports and updates to Prevista to ensure that they are kept informed of the work being carried out.
+    - Work collaboratively with Prevista to ensure that the needs of students and other stakeholders are met.
+    """
+
+
     # Privacy and Data Protection Information Section
     st.header('Privacy and Data Protection Information')
 
-    # Display image
-    st.image("Privacy and Data Protection Information.jpg")
+    # Display the privacy notice text as plain text
+    st.text(privacy_notice)
 
-    st.write("Add Y or N for any of the following boxes if you AGREE to be contacted; tick how you wish to be contacted")
 
     # Contact preferences
-    contact_courses = st.text("About courses/learning opportunities (fill in all boxes with either Y or N)")
+    st.write("Choose Y or N for any of the following if you AGREE to be contacted about courses/learning opportunities")
     contact_surveys = st.radio("For surveys & research", options=["Y", "N"])
     contact_phone = st.radio("Phone", options=["Y", "N"])
     contact_email = st.radio("Email", options=["Y", "N"])
@@ -1499,7 +1557,7 @@ def app():
 
     # st.subheader('Provider Confirmation')
     st.text(
-        'We hereby confirm that we have read, understood and agree with the contents of this document, and understand that the programme is funded by the Mayor of London.'
+        'I hereby confirm that I have read, understood and agree with the contents of this document and above privacy notice, and understand that the programme is funded by the Mayor of London.'
     )
 
 
@@ -1537,24 +1595,24 @@ def app():
     submit_button = st.button('Submit')
     if submit_button:
         placeholder_values = {
-            'p240': partnership,
+            # 'p240': partnership,
             'p241': learner_name,
             'p242': qualification,
             'p243': start_date.strftime('%Y-%m-%d'),  # Format date to string
             'p244': end_date.strftime('%Y-%m-%d'),    # Format date to string
             
-            'p245': checkbox_states['p245'],
-            'p246': checkbox_states['p246'],
-            'p247': checkbox_states['p247'],
-            'p248': checkbox_states['p248'],
-            'p249': checkbox_states['p249'],
-            'p250': checkbox_states['p250'],
-            'p251': checkbox_states['p251'],
-            'p252': checkbox_states['p252'],
-            'p253': checkbox_states['p253'],
-            'p254': checkbox_states['p254'],
-            'p255': checkbox_states['p255'],
-            'p256': checkbox_states['p256'],
+            # 'p245': checkbox_states['p245'],
+            # 'p246': checkbox_states['p246'],
+            # 'p247': checkbox_states['p247'],
+            # 'p248': checkbox_states['p248'],
+            # 'p249': checkbox_states['p249'],
+            # 'p250': checkbox_states['p250'],
+            # 'p251': checkbox_states['p251'],
+            # 'p252': checkbox_states['p252'],
+            # 'p253': checkbox_states['p253'],
+            # 'p254': checkbox_states['p254'],
+            # 'p255': checkbox_states['p255'],
+            # 'p256': checkbox_states['p256'],
     
             'p110': title_mr,
             'p111': title_mrs,
@@ -1684,6 +1742,7 @@ def app():
             'p186': other_val,
             'p187': website_val,
             'p188': promotional_material_val,
+            'p188a': jobcentre_plus_val,
 
             'p192': unemployed_val,
             'p193': economically_inactive_val,
@@ -1842,6 +1901,7 @@ def app():
             'p302': e03_filled,
             'p303': len(selected_levels),
             'p304': referrall,
+            'p305': specify_refereel,
             
         }
 
@@ -1863,9 +1923,9 @@ def app():
             
         else:        
             # Define input and output paths
-            template_file = "ph esfa.docx"
-            modified_file = f"Filled_ESFA_AEB_start_forms_{family_name}.docx"
-
+            template_file = "ph_esfa_v3.docx"
+            modified_file = f"ESFA_Form_Submission_{first_name}_{middle_name}_{family_name}.docx"
+            
             if len(participant_signature.json_data['objects']) != 0:
                 # Convert the drawing to a PIL image and save it
                 signature_path = 'signature_image.png'
@@ -1891,7 +1951,8 @@ def app():
                 receiver_email = sender_email
                 # receiver_email = 'mohamedr@prevista.co.uk'
                 
-                subject = f"ESFA Form Submission: {family_name} {start_date}"
+                subject = f"ESFA Form Submission: {first_name} {middle_name} {family_name} {date.today()} {specify_refereel}"
+
                 body = "ESFA Form submitted. Please find attached files."
 
                 # Local file path
