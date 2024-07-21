@@ -1877,13 +1877,17 @@ def app():
                 # st.success(f"Template modified and saved as {modified_file}")
 
                 # Email
-                # Sender email credentials
-                # sender_email = st.secrets["sender_email"]
-                # sender_password = st.secrets["sender_password"]
 
-                load_dotenv()
-                sender_email = os.getenv('EMAIL')
-                sender_password = os.getenv('PASSWORD')
+                # Sender email credentials
+
+                # Credentials: Streamlit host st.secrets
+                sender_email = st.secrets["sender_email"]
+                sender_password = st.secrets["sender_password"]
+
+                # Credentials: Local env
+                # load_dotenv()
+                # sender_email = os.getenv('EMAIL')
+                # sender_password = os.getenv('PASSWORD')
 
                 receiver_email = sender_email
                 subject = f"ESFA Form Submission: {family_name} {start_date}"
