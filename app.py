@@ -1845,7 +1845,7 @@ def app():
             
         }
 
-        # progress_bar(20)
+        progress_bar(5)
         
         # mandatory fields validation
         
@@ -1885,11 +1885,13 @@ def app():
                 sender_password = st.secrets["sender_password"]
 
                 # Credentials: Local env
-                # load_dotenv()
+                # load_dotenv()                                     # uncomment import of this library!
                 # sender_email = os.getenv('EMAIL')
                 # sender_password = os.getenv('PASSWORD')
 
                 receiver_email = sender_email
+                # receiver_email = 'mohamedr@prevista.co.uk'
+                
                 subject = f"ESFA Form Submission: {family_name} {start_date}"
                 body = "ESFA Form submitted. Please find attached files."
 
@@ -2055,7 +2057,7 @@ def replace_placeholders(template_file, modified_file, placeholder_values, signa
     with open(modified_file, 'rb') as f:
         file_contents = f.read()
         st.download_button(
-            label="Download File",
+            label="Download Your Response",
             data=file_contents,
             file_name=modified_file,
             mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
@@ -2136,8 +2138,7 @@ def progress_bar(duration_seconds):
         progress_bar.progress(progress)
         # Sleep for the calculated time
         time.sleep(sleep_time)
-    
-    st.write("Progress complete!")
+    # st.write("Progress complete!")
 
 if __name__ == '__main__':
     app()
