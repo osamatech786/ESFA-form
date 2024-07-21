@@ -7,7 +7,7 @@ from docx import Document
 from docx.shared import Inches
 from datetime import datetime, date, timedelta
 import os
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import smtplib
 from email.message import EmailMessage
 import time
