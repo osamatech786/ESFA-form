@@ -2140,14 +2140,14 @@ def replace_placeholders(template_file, modified_file, placeholder_values, signa
         print(f"An error occurred: {e}")
 
     # file download button
-    with open(modified_file, 'rb') as f:
-        file_contents = f.read()
-        st.download_button(
-            label="Download Your Response",
-            data=file_contents,
-            file_name=modified_file,
-            mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-        )
+    # with open(modified_file, 'rb') as f:
+    #     file_contents = f.read()
+    #     st.download_button(
+    #         label="Download Your Response",
+    #         data=file_contents,
+    #         file_name=modified_file,
+    #         mime='application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    #     )
 
 # Function to send email with attachments (Handle Local + Uploaded)
 def send_email_with_attachments(sender_email, sender_password, receiver_email, subject, body, files, local_file_path=None):
