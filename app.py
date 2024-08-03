@@ -641,6 +641,7 @@ def app():
     elif employment_status == "Employed (including self-employed) -> go to section C":
         employed_val = 'X'
 
+    up_to_12_months_val, twelve_months_or_longer_val = '-', '-'
     # Section A - Unemployment details
     if "Unemployed" in employment_status:
         st.subheader('Section A - Unemployment details')
@@ -648,7 +649,6 @@ def app():
         
         unemployment_duration = st.radio("If you are not working, how long have you been without work?", ["Up to 12 months", "12 months or longer"])
         # Initialize unemployment duration variables
-        up_to_12_months_val, twelve_months_or_longer_val = '-', '-'
         # Setting 'X' for chosen unemployment duration
         if unemployment_duration == "Up to 12 months":
             up_to_12_months_val = 'X'
@@ -1071,11 +1071,12 @@ def app():
         format='DD/MM/YYYY'
     )
 
-    # Check if the selected date is within the last three months
-    if e02_date_of_issue < three_months_ago:
-        st.warning("The date of issue is not within the last 3 months. Please select a valid date.")
-        st.stop()
-    st.success("The date of issue is within the last 3 months.")
+    # # Check if the selected date is within the last three months
+    # if e02_date_of_issue < three_months_ago:
+    #     st.warning("The date of issue is not within the last 3 months. Please select a valid date.")
+    #     st.stop()
+    # st.success("The date of issue is within the last 3 months.")
+    
     e02_date_of_issue = e02_date_of_issue.strftime("%d-%m-%Y")
     
     # Validation for mandatory field
