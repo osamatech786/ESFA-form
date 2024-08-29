@@ -331,7 +331,7 @@ def app():
     st.header('LLDD, Health Problems, Other Disadvantaged')
 
     # Long term disability, health problem, or learning difficulties
-    st.subheader('Do you consider yourself to have a long term disability, health problem or any learning difficulties? Choose the correct option. If Yes enter code in Primary LLDD or HP; you can add multiple LLDD or HP but primary must be recorded if Yes selected.')
+    st.write('Do you consider yourself to have a long term disability, health problem or any learning difficulties? Choose the correct option. If Yes enter code in Primary LLDD or HP; you can add multiple LLDD or HP but primary must be recorded if Yes selected.')
     disability = st.radio('Choose the correct option:', ['Y', 'N'], index=0)
     # Initialize variables for disability options
     has_disability, no_disability = '-', '-'
